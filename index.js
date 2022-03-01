@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const performQuery = require('./performQuery');
 const axios = require('axios');
 const url = require('url');
+let jwt = require('jsonwebtoken');
+const { verify } = require('crypto');
 dotenv.config();
 
 const app = express();
@@ -17,6 +19,32 @@ app.use((req, res, next) => {
   res.setHeader('content-type','application/json');
   next();
 });
+
+let userToken;
+let genarateToken = (id)=>{
+  const token = jwt.sign(
+    {id},
+    process.env.TOKEN_KEY,
+    {
+      expiresIn:"4h"
+    }
+  );
+  return token; 
+}
+
+
+let verifyToken = (req,res,next)=>{
+  const myToken = req.body.token || req.query.token;
+  if(!token)
+    return res.send(403).send({"status":false})
+  try{
+    const decoded = jwt.verify(myToken,process.env.TOKEN_KEY);
+    req.user_id=decoded;
+  } catch(error){
+    return res.status(401).send({"status":false});
+  }
+  next();
+}
 
 app.get("/public/followFollowing/:user_id",async(req,res)=>{
   let user_id = req.params.user_id || null;
@@ -126,7 +154,6 @@ app.post('/user/editTweet/:tweet_id',async(req,res)=>{
 
 app.get('/public/comments/:tweet_id',async(req,res)=>{
   let tweet_id = req.params.tweet_id || null;
-  
   let data = {};
   try{
     let tweet_comments_query = `SELECT * FROM twitter_comments WHERE tweet_id=${tweet_id}`; 
@@ -180,6 +207,31 @@ app.get('/user/deleteAccount/:user_id',async(req,res)=>{
   } catch(error){
     res.send({"status":false});
   } 
+});
+
+
+app.get("/public/allTweets",async(req,res)=>{
+  data={};
+  try{
+    let all_tweet_query = `SELECT * FROM twitter_tweets`; 
+    let all_tweet_result = await performQuery(all_tweet_query);
+    data.tweets = all_tweet_result;
+
+    for(let i=0;i<all_tweet_result.length;i++){
+      let tweet_id = all_tweet_result[i].tweet_id;
+      let reTweetCount_query = `SELECT count(tweet_id) as retweet_count FROM twitter_tweets where parent_tweet_id=${tweet_id}`; 
+      let reTweetCount_result = await performQuery(reTweetCount_query);
+      data.tweets[i].retweet_count = reTweetCount_result[0].retweet_count;
+    }
+
+   
+    data.tweets = all_tweet_result;
+    data.status = true;
+    res.send(data);
+  } catch(error){
+    res.send({"status":false});
+  }
+
 });
 
 // let insert_sql_query_exp =
