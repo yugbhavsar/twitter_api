@@ -89,6 +89,41 @@ app.get("/user/likeTweetManage/:tweet_id",async(req,res)=>{
   }  
 });
 
+app.post('/user/retweet/:tweet_id',async(req,res)=>{
+  let tweet_id = req.params.tweet_id || null;
+  
+  let user_id=3;
+  let tweet_content = "nice";
+  let tweet_img = null;
+  let data = {};
+  try{
+    let insert_tweet_query = `INSERT INTO twitter_tweets(user_id, tweet_text, image, parent_tweet_id) VALUES (${user_id},'${tweet_content}','${tweet_img}',${tweet_id})`; 
+    let result = await performQuery(insert_tweet_query);
+    data.tweet_id= result.insertId;
+    data.status=true;
+    res.send(data);
+  } catch(error){
+    res.send({"status":false});
+  } 
+});
+
+app.post('/user/editTweet/:tweet_id',async(req,res)=>{
+  let tweet_id = req.params.tweet_id || null;
+  
+  let user_id=3;
+  let tweet_content = "nice";
+  let tweet_img = null;
+  let data = {};
+  try{
+    let update_tweet_query = `UPDATE twitter_tweets SET tweet_text='${tweet_content}',image='${tweet_img}' WHERE user_id=${user_id} and tweet_id=${tweet_id}`; 
+    await performQuery(update_tweet_query);
+    data.status=true;
+    res.send(data);
+  } catch(error){
+    res.send({"status":false});
+  } 
+});
+
 // let insert_sql_query_exp =
 // `INSERT INTO work_exp_detail(id, company_name, designation, starting_date, leaveing_date) VALUES (` +
 // `${basicId},'${companyName}','${desg}','${starting}','${ending}')`;
