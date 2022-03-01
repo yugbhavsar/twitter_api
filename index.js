@@ -145,9 +145,36 @@ app.get('/public/searchProfile',async(req,res)=>{
   
   let data = {};
   try{
-    let profile_query = `SELECT * FROM twitter_users WHERE username like '${username}%';`; 
+    let profile_query = `SELECT * FROM twitter_users WHERE username like '${username}%'`; 
     let profile_result = await performQuery(profile_query);
     data.profiles = profile_result;
+    data.status=true;
+    res.send(data);
+  } catch(error){
+    res.send({"status":false});
+  } 
+});
+
+app.get('/user/deActivateAccount/:user_id',async(req,res)=>{
+  let user_id = req.params.user_id || null;
+  
+  let data = {};
+  try{
+    let profile_deactiveate_query = `UPDATE twitter_users SET is_active=0 WHERE user_id=${user_id}`; 
+    await performQuery(profile_deactiveate_query);
+    data.status=true;
+    res.send(data);
+  } catch(error){
+    res.send({"status":false});
+  } 
+});
+
+app.get('/user/deleteAccount/:user_id',async(req,res)=>{
+  let user_id = req.params.user_id || null;
+  let data = {};
+  try{
+    let profile_delete_query = `UPDATE twitter_users SET is_active=0, is_deleted=1 WHERE user_id=${user_id}`; 
+    await performQuery(profile_delete_query);
     data.status=true;
     res.send(data);
   } catch(error){
