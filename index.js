@@ -124,6 +124,21 @@ app.post('/user/editTweet/:tweet_id',async(req,res)=>{
   } 
 });
 
+app.get('/public/comments/:tweet_id',async(req,res)=>{
+  let tweet_id = req.params.tweet_id || null;
+  
+  let data = {};
+  try{
+    let tweet_comments_query = `SELECT * FROM twitter_comments WHERE tweet_id=${tweet_id}`; 
+    let tweet_comments_result = await performQuery(tweet_comments_query);
+    data.comments = tweet_comments_result;
+    data.status=true;
+    res.send(data);
+  } catch(error){
+    res.send({"status":false});
+  } 
+});
+
 // let insert_sql_query_exp =
 // `INSERT INTO work_exp_detail(id, company_name, designation, starting_date, leaveing_date) VALUES (` +
 // `${basicId},'${companyName}','${desg}','${starting}','${ending}')`;
