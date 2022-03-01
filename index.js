@@ -234,6 +234,78 @@ app.get("/public/allTweets",async(req,res)=>{
 
 });
 
+app.post("/user/comment/:tweet_id",verifyToken, async (req, res) => {
+
+  // let comment= req.query.comment;
+  let tweet_id = req.params.tweet_id || null;
+  let comment = "first commnet"
+
+  let user_id = 5;
+  let data = {};
+
+  try {
+    let comment_query = `INSERT INTO twitter_comments( tweet_id, comment, user_id) VALUES (${tweet_id},'${comment}',${user_id})`
+
+    let result = await performQuery(comment_query);
+    data.comment_id = result.insertId;
+    data.status = true;
+    res.send(data)
+
+  } catch (err) {
+    res.send({ "status": false });
+  }
+
+});
+
+
+
+
+app.post("/user/updateComment/:comment_id",verifyToken, async (req, res) => {
+  let comment_id = req.params.comment_id || null;
+
+  let comment = "first commentssss ";
+
+  let data = {};
+
+  try {
+    let update_comment_query = `UPDATE twitter_comments SET comment='${comment}' WHERE comment_id=${comment_id} `
+    await performQuery(update_comment_query)
+
+
+    data.status = true;
+
+    res.send(data)
+
+
+  } catch (err) {
+    res.send({ "status": false });
+  }
+
+
+});
+
+
+app.post("/user/deleteComment/:comment_id",verifyToken, async (req, res) => {
+  let comment_id = req.params.comment_id || null;
+  let data = {};
+
+  try {
+    let delete_comment_query = `DELETE FROM twitter_comments WHERE comment_id=${comment_id} `
+    await performQuery(delete_comment_query)
+
+
+    data.status = true;
+
+    res.send(data)
+
+
+  } catch (err) {
+    res.send({ "status": false });
+  }
+
+
+});
+
 // let insert_sql_query_exp =
 // `INSERT INTO work_exp_detail(id, company_name, designation, starting_date, leaveing_date) VALUES (` +
 // `${basicId},'${companyName}','${desg}','${starting}','${ending}')`;
