@@ -12,11 +12,8 @@ GET |	/auth/logout/:user_id
 
 Yug: 
 
-POST |	/user/comment/
+POST |	/user/comment/:tweet_id
 POST | 	/user/comment/:comment_id
-GET | 	/public/searchProfile?username=""
-GET |	/user/deActivateAccount/:user_id
-GET |	/user/deleteAccount/:user_id
 
 
 Misa: 
@@ -36,6 +33,11 @@ GET |	/user/likeTweetManage/:tweet_id?isLike=true/false
 POST |	/user/retweet/:tweet_id
 POST |	/user/editTweet/:tweet_id
 GET |	/public/comments/:tweet_id
+
+GET | 	/public/searchProfile?username=""
+GET |		/user/deActivateAccount/:user_id
+GET |		/user/deleteAccount/:user_id
+
 
 
 
