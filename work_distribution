@@ -1,0 +1,56 @@
+For API : port should be 3000 
+For Front : port should be 8000 
+
+Jay: 
+
+POST | 	/auth/login
+POST |	/auth/signup
+POST |	/user/tweets
+POST |  /user/editProfile/:user_id
+GET |	/auth/logout/:user_id 
+
+
+Yug: 
+
+POST |	/user/comment/
+POST | 	/user/comment/:comment_id
+GET | 	/public/searchProfile?username=""
+GET |	/user/deActivateAccount/:user_id
+GET |	/user/deleteAccount/:user_id
+
+
+Misa: 
+
+GET |	/user/deleteComment/:comment_id
+GET |	/user/tweets/:user_id
+GET |	/user/profile/:user_id
+GET |	/public/allUsersProfile
+GET |	/public/allTweets
+
+
+
+Harshil:
+
+GET | 	/public/followFollowing/:user_id
+GET |	/user/likeTweetManage/:tweet_id?isLike=true/false
+POST |	/user/retweet/:tweet_id
+POST |	/user/editTweet/:tweet_id
+GET |	/public/comments/:tweet_id
+
+
+
+Ashiti, Bansi: Front HTML & CSS Work
+
+(*)-necessary
+
+login : In form , input  tag's name should be as follow: 
+	username_email_phone(*), password(*)
+Signup : In form , input  tag's name should be as follow:
+	name(*),email(*),phone(*),dob(*),password(*),profile_pic,bio,language_speak(*)=>english,
+	city(*)=>Ahmedabad,Rajkot,Vadodara  , country(*)=>india
+tweetForm : In form , input  tag's name should be as follow:
+	    tweet_id(hidden),tweet_content(248 chars limit)(*), image
+comment : comment_id(hidden), tweet_id(hidden)(*), comment_content(*)
+edit profile : user_id(*), username(*),name(*),email(*),phone(*),dob(*),password(*),profile_pic,bio,language_speak(*)=>english,
+	city(*)=>Ahmedabad,Rajkot,Vadodara  , country(*)=>india
+	
