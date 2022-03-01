@@ -285,7 +285,7 @@ app.post("/user/updateComment/:comment_id",verifyToken, async (req, res) => {
 });
 
 
-app.post("/user/deleteComment/:comment_id",verifyToken, async (req, res) => {
+app.get("/user/deleteComment/:comment_id",verifyToken, async (req, res) => {
   let comment_id = req.params.comment_id || null;
   let data = {};
 
