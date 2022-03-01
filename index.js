@@ -25,18 +25,14 @@ app.get("/public/followFollowing/:user_id",async(req,res)=>{
     if(user_id){
       let following_count_query = `select count(follower_id) as 'following_count' from twitter_followers where user_id=${user_id}`; 
       let following_count_result = await performQuery(following_count_query);
-      if(following_count_result[0].following_count>0)
-        data.following_count = following_count_result[0].following_count;
-      else
-        data.following_count=0;
+      data.following_count = following_count_result[0].following_count;
+
 
 
       let follow_count_query = `select count(user_id) as 'follow_count' from twitter_followers where another_user_id=${user_id}`; 
       let follow_count_result = await performQuery(follow_count_query);
-      if(follow_count_result[0].follow_count>0)
-        data.follow_count = follow_count_result[0].follow_count;
-      else
-        data.follow_count=0;
+      data.follow_count = follow_count_result[0].follow_count;
+
 
 
       let following_list_query = `SELECT * FROM twitter_users as tu join twitter_followers as tf on tu.user_id=tf.user_id WHERE tu.user_id=${user_id}`; 
@@ -65,6 +61,33 @@ app.get("/public/followFollowing/:user_id",async(req,res)=>{
 
 });
 
+
+app.get("/user/likeTweetManage/:tweet_id",async(req,res)=>{
+  let tweet_id = req.params.tweet_id || null;
+
+  let user_id=3;
+
+  let data = {};
+ 
+  try{
+    let like_count_query = `SELECT count(like_id) as 'like_count' FROM twitter_likes WHERE uid=${user_id} and tweet_id=${tweet_id}`; 
+    let like_count_result = await performQuery(like_count_query);
+    if(like_count_result[0].like_count==0){
+      let like_insert_query = `INSERT INTO twitter_likes(uid, tweet_id) VALUES (${user_id},${tweet_id})`; 
+      await performQuery(like_insert_query);
+    }else{
+      let like_delete_query = `DELETE FROM twitter_likes WHERE tweet_id=${tweet_id} and uid=${user_id}`; 
+      await performQuery(like_delete_query);
+    }
+    let after_like_count_query = `SELECT count(like_id) as 'tweet_like' FROM twitter_likes WHERE tweet_id=${tweet_id}`; 
+    let after_like_count_result = await performQuery(after_like_count_query);
+    data.tweet_like_count=after_like_count_result[0].tweet_like;
+    data.status=true;
+    res.send(data);
+  } catch(error){
+    res.send({"status":false});
+  }  
+});
 
 // let insert_sql_query_exp =
 // `INSERT INTO work_exp_detail(id, company_name, designation, starting_date, leaveing_date) VALUES (` +
