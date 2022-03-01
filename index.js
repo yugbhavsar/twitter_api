@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-let userToken;
+
 let genarateToken = (id)=>{
   const token = jwt.sign(
     {id},
@@ -35,15 +35,15 @@ let genarateToken = (id)=>{
 
 let verifyToken = (req,res,next)=>{
   const myToken = req.body.token || req.query.token;
-  if(!token)
-    return res.send(403).send({"status":false})
+  if(!myToken)
+    return res.send(403).send({"status":false,"message":'token not received'});
   try{
     const decoded = jwt.verify(myToken,process.env.TOKEN_KEY);
-    req.user_id=decoded;
+    req.user=decoded;
   } catch(error){
-    return res.status(401).send({"status":false});
+    return res.status(401).send({"status":false,"message":'invalid token'});
   }
-  next();
+  return next();
 }
 
 app.get("/public/followFollowing/:user_id",async(req,res)=>{
@@ -90,7 +90,7 @@ app.get("/public/followFollowing/:user_id",async(req,res)=>{
 });
 
 
-app.get("/user/likeTweetManage/:tweet_id",async(req,res)=>{
+app.get("/user/likeTweetManage/:tweet_id",verifyToken,async(req,res)=>{
   let tweet_id = req.params.tweet_id || null;
 
   let user_id=3;
@@ -117,7 +117,7 @@ app.get("/user/likeTweetManage/:tweet_id",async(req,res)=>{
   }  
 });
 
-app.post('/user/retweet/:tweet_id',async(req,res)=>{
+app.post('/user/retweet/:tweet_id',verifyToken,async(req,res)=>{
   let tweet_id = req.params.tweet_id || null;
   
   let user_id=3;
@@ -135,7 +135,7 @@ app.post('/user/retweet/:tweet_id',async(req,res)=>{
   } 
 });
 
-app.post('/user/editTweet/:tweet_id',async(req,res)=>{
+app.post('/user/editTweet/:tweet_id',verifyToken,async(req,res)=>{
   let tweet_id = req.params.tweet_id || null;
   
   let user_id=3;
@@ -182,7 +182,7 @@ app.get('/public/searchProfile',async(req,res)=>{
   } 
 });
 
-app.get('/user/deActivateAccount/:user_id',async(req,res)=>{
+app.get('/user/deActivateAccount/:user_id',verifyToken,async(req,res)=>{
   let user_id = req.params.user_id || null;
   
   let data = {};
@@ -196,7 +196,7 @@ app.get('/user/deActivateAccount/:user_id',async(req,res)=>{
   } 
 });
 
-app.get('/user/deleteAccount/:user_id',async(req,res)=>{
+app.get('/user/deleteAccount/:user_id',verifyToken,async(req,res)=>{
   let user_id = req.params.user_id || null;
   let data = {};
   try{
